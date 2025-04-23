@@ -8,8 +8,9 @@ using SixMinApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// This line is critical for Docker container to bind port 80
 builder.WebHost.UseUrls("http://*:80");
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
