@@ -44,7 +44,7 @@ pipeline {
 
                      i=1
                     while [ $i -le 5 ]; do
-                        if curl -s http://localhost:5000/ | grep "API is running!"; then
+                        if docker exec sixminapi-test curl -s http://localhost:80/ | grep "API is running!"; then
                             echo "API is reachable"
                             break
                         else
