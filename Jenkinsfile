@@ -41,8 +41,15 @@ pipeline {
                 sh '''
                     docker build -t sixminapi .
                     docker run -d -p 5000:80 --name sixminapi-test sixminapi
-                    sleep 10
-                    curl http://localhost:5000/api/v1/commands || echo "Failed to reach endpoint"
+                    for i in {1..10}; do
+                        if curl -s http://localhost:5000/api/v1/commands; then
+                            echo "API is reachable"
+                            break
+                        else
+                            echo "Waiting for API... ($i)"
+                            sleep 2
+                        fi
+                    done
                 '''
             }
         }

@@ -33,7 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.MapGet("api/v1/commands", async (ICommandRepo repo, IMapper mapper) => {
     var commands = await repo.GetAllCommands();
@@ -89,6 +89,8 @@ app.MapDelete("api/v1/commands/{id}", async (ICommandRepo repo, IMapper mapper, 
     return Results.NoContent();
 
 });
+
+app.MapGet("/", () => "API is running!");
 
 app.Run();
 
