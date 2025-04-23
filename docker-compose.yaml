@@ -1,5 +1,15 @@
 version: '3.8'
+
 services:
+  api:
+    build: .
+    ports:
+      - "5000:80"
+    depends_on:
+      - sqlserver
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=MyDb;User=sa;Password=pa55w0rd!;TrustServerCertificate=True"
+
   sqlserver:
     image: "mcr.microsoft.com/mssql/server:2019-latest"
     environment:
