@@ -42,7 +42,7 @@ pipeline {
                     docker build -t sixminapi .
                     docker run -d -p 5000:80 --name sixminapi-test sixminapi
 
-                     i=1
+                    i=1
                     while [ $i -le 5 ]; do
                         if docker exec sixminapi-test curl -s http://localhost:80/ | grep "API is running!"; then
                             echo "API is reachable"
@@ -52,11 +52,12 @@ pipeline {
                             sleep 2
                         fi
                         i=$((i+1))
-                        if [ "$i" -gt 10 ]; then
-                            echo "API not reachable after 5 tries"
-                            exit 1
-                        fi
-            done
+                    done
+
+                    if [ "$i" -gt 5 ]; then
+                        echo "API not reachable after 5 tries"
+                        exit 1
+                    fi
                 '''
             }
         }
