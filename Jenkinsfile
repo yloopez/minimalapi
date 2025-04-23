@@ -14,30 +14,52 @@ pipeline {
         }
 
         stage('Start Docker Compose') {
+            
             steps {
                 sh 'docker-compose up -d'
             }
         }
 
         stage('Restore') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
+                    args '-v $HOME/.nuget/packages:/root/.nuget/packages'
+                }
+            }
             steps {
                 sh 'dotnet restore'
             }
         }
 
         stage('Build') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
+                }
+            }
             steps {
                 sh 'dotnet build --configuration Release --no-restore'
             }
         }
 
         stage('Test') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
+                }
+            }
             steps {
                 sh 'dotnet test --no-build --verbosity normal || echo "Tests skipped (none found)"'
             }
         }
 
         stage('Publish') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
+                }
+            }
             steps {
                 sh 'dotnet publish -c Release -o published'
             }
