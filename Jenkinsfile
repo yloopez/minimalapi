@@ -42,7 +42,7 @@ pipeline {
                     docker build -t sixminapi .
                     docker run -d -p 5000:80 --name sixminapi-test sixminapi
                     for i in {1..10}; do
-                        if curl -s http://localhost:5000/api/v1/commands; then
+                        if curl -s http://localhost:5000/; then
                             echo "API is reachable"
                             break
                         else
