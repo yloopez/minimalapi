@@ -8,6 +8,8 @@ using SixMinApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.WebHost.UseUrls("http://*:80");
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
