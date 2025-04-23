@@ -90,7 +90,7 @@ app.MapDelete("api/v1/commands/{id}", async (ICommandRepo repo, IMapper mapper, 
 
 });
 
-app.MapGet("/", () => "API is running!");
+app.MapGet("/", () => "API is running Correctly!");
 
 app.Run();
 

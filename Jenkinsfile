@@ -44,7 +44,7 @@ pipeline {
 
                     i=1
                     while [ $i -le 5 ]; do
-                        if docker exec sixminapi-test curl -s http://localhost:80/ | grep "API is running!"; then
+                        if docker exec sixminapi-test curl -s http://localhost:80/ | grep "API is running from JenkinsFile"; then
                             echo "API is reachable"
                             break
                         else
@@ -52,12 +52,12 @@ pipeline {
                             sleep 2
                         fi
                         i=$((i+1))
+                        if [ "$i" -gt 5 ]; then
+                            echo "API not reachable after 5 tries"
+                            docker logs sixminapi-test || true
+                            exit 1
+                        fi
                     done
-
-                    if [ "$i" -gt 5 ]; then
-                        echo "API not reachable after 5 tries"
-                        exit 1
-                    fi
                 '''
             }
         }

@@ -20,9 +20,9 @@ COPY --from=build /out .
 # Open port (optional but good for documentation)
 EXPOSE 80
 
-# Add health check
-HEALTHCHECK --interval=5s --timeout=3s --start-period=3s --retries=5 \
-  CMD curl --fail http://localhost:80/ || exit 1
+# # Add health check
+# HEALTHCHECK --interval=5s --timeout=3s --start-period=3s --retries=5 \
+#   CMD curl --fail http://localhost:80/ || exit 1
 
 # Set the startup command
 ENTRYPOINT ["dotnet", "SixMinApi.dll"]
