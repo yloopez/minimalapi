@@ -14,13 +14,12 @@ pipeline {
         }
 
         stage('Start Docker Compose') {
-            
             steps {
                 sh 'docker-compose up -d'
             }
         }
 
-        stage('Restore') {
+        stage('Build and Test in Docker') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:6.0'
@@ -28,40 +27,12 @@ pipeline {
                 }
             }
             steps {
-                sh 'dotnet restore'
-            }
-        }
-
-        stage('Build') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
-                }
-            }
-            steps {
-                sh 'dotnet build --configuration Release --no-restore'
-            }
-        }
-
-        stage('Test') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
-                }
-            }
-            steps {
-                sh 'dotnet test --no-build --verbosity normal || echo "Tests skipped (none found)"'
-            }
-        }
-
-        stage('Publish') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
-                }
-            }
-            steps {
-                sh 'dotnet publish -c Release -o published'
+                sh '''
+                    dotnet restore
+                    dotnet build --configuration Release --no-restore
+                    dotnet test --no-build --verbosity normal || echo "Tests skipped"
+                    dotnet publish -c Release -o published
+                '''
             }
         }
 
@@ -71,7 +42,7 @@ pipeline {
                     docker build -t sixminapi .
                     docker run -d -p 5000:80 --name sixminapi-test sixminapi
                     sleep 10
-                    curl https://localhost:5000/api/v1/commands || echo "Failed to reach endpoint"
+                    curl http://localhost:5000/api/v1/commands || echo "Failed to reach endpoint"
                 '''
             }
         }
