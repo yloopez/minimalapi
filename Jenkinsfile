@@ -39,6 +39,7 @@ pipeline {
         stage('Run Container and Test Endpoint') {
             steps {
                 sh '''
+                    docker rm -f sixminapi-test || true
                     docker build -t sixminapi .
                     docker run -d -p 5000:80 --name sixminapi-test sixminapi
 
