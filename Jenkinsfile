@@ -40,7 +40,6 @@ pipeline {
         stage('Run Container and Test Endpoint') {
             steps {
                 sh '''
-                    set -e
                     i=1
                     while [ $i -le 10 ]; do
                         echo "🔍 Checking container health (attempt $i)..."
