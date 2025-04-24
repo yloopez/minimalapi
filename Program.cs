@@ -16,9 +16,10 @@ builder.Services.AddSwaggerGen();
 
 var sqlConBuilder = new SqlConnectionStringBuilder();
 
-sqlConBuilder.ConnectionString = builder.Configuration.GetConnectionString("SQLDbConnection");
-sqlConBuilder.UserID = builder.Configuration.GetConnectionString("UserID");
-sqlConBuilder.Password = builder.Configuration.GetConnectionString("Password");
+sqlConBuilder.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// sqlConBuilder.ConnectionString = builder.Configuration.GetConnectionString("SQLDbConnection");
+// sqlConBuilder.UserID = builder.Configuration.GetConnectionString("UserID");
+// sqlConBuilder.Password = builder.Configuration.GetConnectionString("Password");
 
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(sqlConBuilder.ConnectionString));
 builder.Services.AddScoped<ICommandRepo, CommandRepo>();
