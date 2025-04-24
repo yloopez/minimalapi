@@ -39,22 +39,24 @@ pipeline {
         stage('Run Container and Test Endpoint') {
             steps {
                 sh '''
+                    set -e
                     i=1
                     while [ $i -le 5 ]; do
                         if curl -s http://localhost:5000/ | grep "API is running Correctly!"; then
-                            echo "API is reachable"
+                            echo "✅ API is reachable"
                             break
                         else
-                            echo "Waiting for API... ($i)"
+                            echo "⏳ Waiting for API... ($i)"
                             docker-compose logs api || true
                             sleep 2
                         fi
                         i=$((i+1))
-                        if [ "$i" -gt 5 ]; then
-                            echo "API not reachable after 10 tries"
-                            exit 1
-                        fi
                     done
+
+                    if [ "$i" -gt 5 ]; then
+                        echo "❌ API not reachable after 5 tries"
+                        exit 1
+                    fi
                 '''
             }
         }
