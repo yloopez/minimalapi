@@ -50,7 +50,10 @@ pipeline {
                             exit 1
                         fi
 
-                        if docker exec "$container_id" curl -s http://localhost:80/ | grep "API is running Correctly!"; then
+                        response=$(docker exec "$container_id" sh -c 'curl -s http://localhost:80/')
+                        echo "🔎 Response: $response"
+
+                        if echo "$response" | grep "API is running Correctly!"; then
                             echo "✅ API is reachable"
                             break
                         else
