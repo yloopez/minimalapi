@@ -41,7 +41,7 @@ pipeline {
                 sh '''
                     i=1
                     while [ $i -le 5 ]; do
-                        if curl -s http://localhost:5000/ | grep "API is running Correctly from Jenkinsfile"; then
+                        if curl -s http://localhost:5000/ | grep "API is running Correctly!"; then
                             echo "API is reachable"
                             break
                         else
