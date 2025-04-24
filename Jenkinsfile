@@ -31,6 +31,7 @@ pipeline {
                     dotnet restore
                     dotnet build --configuration Release --no-restore
                     dotnet test --no-build --verbosity normal || echo "Tests skipped"
+                    rm -rf published
                     dotnet publish -c Release -o published
                 '''
             }
@@ -42,7 +43,13 @@ pipeline {
                     set -e
                     i=1
                     while [ $i -le 5 ]; do
-                        if curl -s http://localhost:5000/ | grep "API is running Correctly!"; then
+                        echo "🔍 Checking container health (attempt $i)..."
+                        docker-compose ps
+
+                        response=$(curl -s http://localhost:5000/)
+                        echo "➡️ Response: '$response'"
+
+                        if echo "$response" | grep -q "API is running Correctly!"; then
                             echo "✅ API is reachable"
                             break
                         else
