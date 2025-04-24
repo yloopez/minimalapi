@@ -40,21 +40,23 @@ pipeline {
         stage('Run Container and Test Endpoint') {
             steps {
                 sh '''
+                    set -e
                     i=1
                     while [ $i -le 10 ]; do
                         echo "🔍 Checking container health (attempt $i)..."
-                        docker-compose ps
+                        container_id=$(docker ps -qf "name=api_pipeline-api-1")
+                        if [ -z "$container_id" ]; then
+                            echo "❌ API container not found!"
+                            exit 1
+                        fi
 
-                        response=$(curl -s http://localhost:5000/)
-                        echo "➡️ Response: '$response'"
-
-                        if [ ! -z "$response" ] && echo "$response" | grep -q "API is running Correctly!"; then
+                        if docker exec "$container_id" curl -s http://localhost:80/ | grep "API is running Correctly!"; then
                             echo "✅ API is reachable"
-                            exit 0
+                            break
                         else
-                            echo "⏳ Waiting for API to respond... ($i)"
-                            docker-compose logs api || true
-                            sleep 3
+                            echo "⏳ Waiting for API... ($i)"
+                            docker-compose logs --tail=20 api || true
+                            sleep 2
                         fi
                         i=$((i+1))
                     done
