@@ -42,16 +42,7 @@ pipeline {
                     set -e
                     i=1
                     while [ $i -le 5 ]; do
-                        container_id=$(docker ps -qf "name=api_pipeline-api-1")
-                        if [ -z "$container_id" ]; then
-                            echo "❌ API container not found"
-                            exit 1
-                        fi
-
-                        response=$(docker exec "$container_id" curl -s http://localhost:80/)
-                        echo "🔍 Response: $response"
-
-                        if echo "$response" | grep -q "API is running Correctly!"; then
+                        if curl -s http://localhost:5000/ | grep "API is running Correctly!"; then
                             echo "✅ API is reachable"
                             break
                         else
@@ -59,7 +50,6 @@ pipeline {
                             docker-compose logs api || true
                             sleep 2
                         fi
-
                         i=$((i+1))
                     done
 
