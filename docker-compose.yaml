@@ -8,7 +8,9 @@ services:
     depends_on:
       - sqlserver
     environment:
-      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=MyDb;User=sa;Password=pa55w0rd!;TrustServerCertificate=True"
+      ConnectionStrings__SQLDbConnection: "Server=localhost,1433;Initial Catalog=CommandDb;TrustServerCertificate=True"
+      ConnectionStrings__UserID: "sa"
+      ConnectionStrings__Password: "pa55w0rd!"
 
   sqlserver:
     image: "mcr.microsoft.com/mssql/server:2019-latest"
