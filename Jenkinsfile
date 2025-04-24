@@ -50,7 +50,7 @@ pipeline {
                             exit 1
                         fi
 
-                        response=$(docker exec "$container_id" sh -c 'curl -s http://localhost:80/')
+                        response=$(curl -s http://localhost:5000/)
                         echo "🔎 Response: $response"
 
                         if echo "$response" | grep "API is running Correctly!"; then
