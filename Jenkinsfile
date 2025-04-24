@@ -42,7 +42,10 @@ pipeline {
                     set -e
                     i=1
                     while [ $i -le 5 ]; do
-                        if curl -s http://localhost:5000/ | grep "API is running Correctly!"; then
+                        response=$(curl -s http://localhost:5000/)
+                        echo "Response: $response"
+
+                        if echo "$response" | grep "API is running Correctly!"; then
                             echo "✅ API is reachable"
                             break
                         else
