@@ -97,5 +97,7 @@ app.MapDelete("api/v1/commands/{id}", async (ICommandRepo repo, IMapper mapper, 
 
 app.MapGet("/", () => "API is running Correctly!");
 
+Console.WriteLine("✅ SixMinApi started");
+
 app.Run();
 

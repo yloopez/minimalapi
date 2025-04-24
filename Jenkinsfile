@@ -42,26 +42,26 @@ pipeline {
                 sh '''
                     set -e
                     i=1
-                    while [ $i -le 5 ]; do
+                    while [ $i -le 10 ]; do
                         echo "🔍 Checking container health (attempt $i)..."
                         docker-compose ps
 
                         response=$(curl -s http://localhost:5000/)
                         echo "➡️ Response: '$response'"
 
-                        if echo "$response" | grep -q "API is running Correctly!"; then
+                        if [ ! -z "$response" ] && echo "$response" | grep -q "API is running Correctly!"; then
                             echo "✅ API is reachable"
-                            break
+                            exit 0
                         else
-                            echo "⏳ Waiting for API... ($i)"
+                            echo "⏳ Waiting for API to respond... ($i)"
                             docker-compose logs api || true
-                            sleep 2
+                            sleep 3
                         fi
                         i=$((i+1))
                     done
 
-                    if [ "$i" -gt 5 ]; then
-                        echo "❌ API not reachable after 5 tries"
+                    if [ "$i" -gt 10 ]; then
+                        echo "❌ API not reachable after 10 tries"
                         exit 1
                     fi
                 '''
