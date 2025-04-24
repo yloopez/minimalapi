@@ -52,7 +52,7 @@ pipeline {
                             exit 1
                         fi
 
-                        response=$(docker exec api_pipeline-api-1 curl -s http://localhost:80/)
+                        response=$(docker exec "$container_id" curl -s http://localhost:80/)
                         echo "Response: $response"
 
                         if echo "$response" | grep "API is running Correctly!"; then
