@@ -21,6 +21,7 @@ sqlConBuilder.ConnectionString = builder.Configuration.GetConnectionString("Defa
 // sqlConBuilder.UserID = builder.Configuration.GetConnectionString("UserID");
 // sqlConBuilder.Password = builder.Configuration.GetConnectionString("Password");
 
+
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(sqlConBuilder.ConnectionString));
 builder.Services.AddScoped<ICommandRepo, CommandRepo>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
