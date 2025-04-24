@@ -15,6 +15,8 @@ pipeline {
 
         stage('Start Docker Compose') {
             steps {
+                sh 'docker-compose down --volumes || true'
+                sh 'docker-compose build --no-cache'
                 sh 'docker-compose up -d'
             }
         }
