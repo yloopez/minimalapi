@@ -39,22 +39,19 @@ pipeline {
         stage('Run Container and Test Endpoint') {
             steps {
                 sh '''
-                    docker rm -f sixminapi-test || true
-                    docker build -t sixminapi .
-                    docker run -d -p 5000:80 --name sixminapi-test sixminapi
-
                     i=1
                     while [ $i -le 5 ]; do
-                        if docker exec sixminapi-test curl -s http://localhost:80/ | grep "API is running from JenkinsFile"; then
+                        if curl -s http://localhost:5000/ | grep "API is running Correctly!"; then
                             echo "API is reachable"
                             break
                         else
                             echo "Waiting for API... ($i)"
+                            docker-compose logs api || true
                             sleep 2
                         fi
                         i=$((i+1))
                         if [ "$i" -gt 5 ]; then
-                            echo "API not reachable after 5 tries"
+                            echo "API not reachable after 10 tries"
                             exit 1
                         fi
                     done
@@ -65,8 +62,6 @@ pipeline {
         stage('Cleanup') {
             steps {
                 sh '''
-                    docker stop sixminapi-test || true
-                    docker rm sixminapi-test || true
                     docker-compose down
                 '''
             }
