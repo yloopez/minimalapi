@@ -55,7 +55,6 @@ pipeline {
                         i=$((i+1))
                         if [ "$i" -gt 5 ]; then
                             echo "API not reachable after 5 tries"
-                            docker logs sixminapi-test || true
                             exit 1
                         fi
                     done
