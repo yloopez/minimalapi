@@ -31,15 +31,13 @@ pipeline {
                 }
             }
             steps {
-                dir('SixMinApi') {
-                    sh '''
-                        dotnet restore SixMinApi.sln
-                        dotnet build SixMinApi.sln --configuration Release --no-restore
-                        dotnet test SixMinApi.sln --no-build --verbosity normal || echo "Tests failed"
-                        rm -rf SixMinApi/published
-                        dotnet publish SixMinApi/SixMinApi.csproj -c Release -o SixMinApi/published
-                    '''
-                }
+                sh '''
+                    dotnet restore SixMinApi.sln
+                    dotnet build SixMinApi.sln --configuration Release --no-restore
+                    dotnet test SixMinApi.sln --no-build --verbosity normal || echo "Tests failed"
+                    rm -rf SixMinApi/published
+                    dotnet publish SixMinApi/SixMinApi.csproj -c Release -o SixMinApi/published
+                '''
             }
         }
 
