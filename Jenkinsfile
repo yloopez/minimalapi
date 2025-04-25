@@ -86,15 +86,17 @@ pipeline {
             }
             environment {
                 SONAR_SCANNER_OPTS = "-Xmx512m"
+                DOTNET_TOOLS_DIR = "/root/.dotnet/tools"
                 PATH = "/root/.dotnet/tools:$PATH"
             }
             steps {
                 withSonarQubeEnv('LocalSonar') {
                     sh '''
                         dotnet tool install --global dotnet-sonarscanner
-                        dotnet sonarscanner begin /k:"SixMinApi" /d:sonar.login=$SONAR_AUTH_TOKEN
+                        export PATH="$DOTNET_TOOLS_DIR:$PATH"
+                        $DOTNET_TOOLS_DIR/dotnet-sonarscanner begin /k:"SixMinApi" /d:sonar.login=$SONAR_AUTH_TOKEN
                         dotnet build SixMinApi.sln
-                        dotnet sonarscanner end /d:sonar.login=$SONAR_AUTH_TOKEN
+                        $DOTNET_TOOLS_DIR/dotnet-sonarscanner end /d:sonar.login=$SONAR_AUTH_TOKEN
                     '''
                 }
             }
