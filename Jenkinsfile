@@ -34,7 +34,7 @@ pipeline {
                 sh '''
                     dotnet restore SixMinApi.sln
                     dotnet build SixMinApi.sln --configuration Release --no-restore
-                    dotnet test SixMinApi.sln --no-build --verbosity normal || echo "Tests failed"
+                    dotnet test SixMinApi.sln -c Release --no-build --verbosity normal || echo "Tests failed"
                     rm -rf SixMinApi/published
                     dotnet publish SixMinApi/SixMinApi.csproj -c Release -o SixMinApi/published
                 '''
