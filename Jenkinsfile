@@ -92,6 +92,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('LocalSonar') {
                     sh '''
+                        apt-get update && apt-get install -y default-jre
                         dotnet tool install --global dotnet-sonarscanner
                         export PATH="$DOTNET_TOOLS_DIR:$PATH"
                         $DOTNET_TOOLS_DIR/dotnet-sonarscanner begin /k:"SixMinApi" /d:sonar.login=$SONAR_AUTH_TOKEN
