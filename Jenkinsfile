@@ -83,7 +83,7 @@ pipeline {
                 SONAR_SCANNER_OPTS = "-Xmx512m"
             }
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('LocalSonar') {
                     sh '''
                         dotnet sonarscanner begin /k:"SixMinApi" /d:sonar.login=$SONAR_AUTH_TOKEN
                         dotnet build SixMinApi.sln
