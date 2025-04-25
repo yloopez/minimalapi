@@ -23,6 +23,39 @@ pipeline {
             }
         }
 
+        stage('Apply EF Migrations') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
+                    args '-v $HOME/.nuget/packages:/root/.nuget/packages'
+                }
+            }
+            environment {
+                ConnectionStrings__SQLDbConnection = "Server=sqlserver;Database=CommandDb;User Id=sa;Password=pa55w0rd!;TrustServerCertificate=True"
+            }
+            steps {
+                dir('SixMinApi') {
+                    sh '''
+                        echo "Waiting for SQL Server to be ready..."
+                        for i in {1..10}; do
+                            if docker exec $(docker ps -qf "name=sixminapi-sqlserver-1") /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "pa55w0rd!" -Q "SELECT 1" > /dev/null 2>&1; then
+                                echo "✅ SQL Server is ready."
+                                break
+                            else
+                                echo "⏳ SQL Server not ready yet... ($i)"
+                                sleep 5
+                            fi
+                        done
+
+                        echo "Applying EF Core Migrations..."
+                        dotnet tool install --global dotnet-ef
+                        export PATH="$PATH:/root/.dotnet/tools"
+                        dotnet ef database update --project SixMinApi.csproj
+                    '''
+                }
+            }
+        }
+
         stage('Build and Test in Docker') {
             agent {
                 docker {
@@ -73,6 +106,9 @@ pipeline {
                             echo "API not reachable after 10 tries"
                             exit 1
                         fi
+
+                        echo "Hitting /api/v1/commands endpoint..."
+                        docker exec "$container_id" curl -s http://localhost:80/api/v1/commands
                     '''
                 }
             }
