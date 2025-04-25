@@ -78,6 +78,21 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            environment {
+                SONAR_SCANNER_OPTS = "-Xmx512m"
+            }
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        dotnet sonarscanner begin /k:"SixMinApi" /d:sonar.login=$SONAR_AUTH_TOKEN
+                        dotnet build SixMinApi.sln
+                        dotnet sonarscanner end /d:sonar.login=$SONAR_AUTH_TOKEN
+                    '''
+                }
+            }
+        }
+
         stage('Cleanup') {
             steps {
                 dir('SixMinApi') {
