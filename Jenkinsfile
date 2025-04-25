@@ -30,9 +30,6 @@ pipeline {
                     args '-v $HOME/.nuget/packages:/root/.nuget/packages'
                 }
             }
-            environment {
-                ConnectionStrings__SQLDbConnection = "Server=sqlserver;Database=CommandDb;User Id=sa;Password=pa55w0rd!;TrustServerCertificate=True"
-            }
             steps {
                 dir('SixMinApi') {
                     sh '''
