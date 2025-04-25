@@ -33,21 +33,15 @@ pipeline {
             steps {
                 dir('SixMinApi') {
                     sh '''
-                        echo "Waiting for SQL Server to be ready..."
-                        for i in {1..10}; do
-                            if docker exec $(docker ps -qf "name=sixminapi-sqlserver-1") /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "pa55w0rd!" -Q "SELECT 1" > /dev/null 2>&1; then
-                                echo "SQL Server is ready."
-                                break
-                            else
-                                echo "SQL Server not ready yet... ($i)"
-                                sleep 5
-                            fi
-                        done
+                        echo "Waiting 10s for SQL Server to be ready..."
+                        sleep 10
 
                         echo "Applying EF Core Migrations..."
                         dotnet tool install --global dotnet-ef --version 6.0.26
                         export PATH="$PATH:/root/.dotnet/tools"
-                        dotnet ef database update --project SixMinApi.csproj
+                        dotnet ef database update \
+                            --project SixMinApi.csproj \
+                            --connection "Server=host.docker.internal,1433;Initial Catalog=CommandDb;User ID=sa;Password=pa55w0rd!;TrustServerCertificate=True"
                     '''
                 }
             }
