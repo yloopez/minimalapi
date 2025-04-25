@@ -33,11 +33,11 @@ pipeline {
             steps {
                 dir('SixMinApi') {
                     sh '''
-                        dotnet restore
-                        dotnet build --configuration Release --no-restore
-                        dotnet test --no-build --verbosity normal || echo "Tests skipped"
-                        rm -rf published
-                        dotnet publish -c Release -o published
+                        dotnet restore SixMinApi.sln
+                        dotnet build SixMinApi.sln --configuration Release --no-restore
+                        dotnet test SixMinApi.sln --no-build --verbosity normal || echo "Tests failed"
+                        rm -rf SixMinApi/published
+                        dotnet publish SixMinApi/SixMinApi.csproj -c Release -o SixMinApi/published
                     '''
                 }
             }
