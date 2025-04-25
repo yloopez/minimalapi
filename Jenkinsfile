@@ -79,12 +79,19 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
+                }
+            }
             environment {
                 SONAR_SCANNER_OPTS = "-Xmx512m"
+                PATH = "/root/.dotnet/tools:$PATH"
             }
             steps {
                 withSonarQubeEnv('LocalSonar') {
                     sh '''
+                        dotnet tool install --global dotnet-sonarscanner
                         dotnet sonarscanner begin /k:"SixMinApi" /d:sonar.login=$SONAR_AUTH_TOKEN
                         dotnet build SixMinApi.sln
                         dotnet sonarscanner end /d:sonar.login=$SONAR_AUTH_TOKEN
