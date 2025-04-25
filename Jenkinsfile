@@ -145,6 +145,7 @@ pipeline {
             }
         }
 
+        /*
         stage('Cleanup') {
             steps {
                 dir('SixMinApi') {
@@ -152,5 +153,6 @@ pipeline {
                 }
             }
         }
+        */
     }
 }
