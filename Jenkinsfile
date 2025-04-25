@@ -51,7 +51,7 @@ pipeline {
                             echo "🔍 Checking container health (attempt $i)..."
                             container_id=$(docker ps -qf "name=sixminapi-api-1")
                             if [ -z "$container_id" ]; then
-                                echo "❌ API container not found!"
+                                echo "API container not found!"
                                 exit 1
                             fi
 
@@ -59,10 +59,10 @@ pipeline {
                             echo "Response: $response"
 
                             if echo "$response" | grep "API is running Correctly!"; then
-                                echo "✅ API is reachable"
+                                echo "API is reachable"
                                 break
                             else
-                                echo "⏳ Waiting for API... ($i)"
+                                echo "Waiting for API... ($i)"
                                 docker-compose logs --tail=20 api || true
                                 sleep 2
                             fi
@@ -70,11 +70,26 @@ pipeline {
                         done
 
                         if [ "$i" -gt 10 ]; then
-                            echo "❌ API not reachable after 10 tries"
+                            echo "API not reachable after 10 tries"
                             exit 1
                         fi
                     '''
                 }
+            }
+        }
+
+         stage('Security Scan') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
+                }
+            }
+            steps {
+                sh '''
+                    echo "Running Security Scan on NuGet dependencies..."
+                    dotnet restore SixMinApi.sln
+                    dotnet list SixMinApi/SixMinApi.csproj package --vulnerable || true
+                '''
             }
         }
 
