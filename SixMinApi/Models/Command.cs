@@ -11,7 +11,6 @@ namespace SixMinApi.Models
         public string? HowTo { get; set; }
 
         [Required]
-        [MaxLength(6)]
         public string? Platform { get; set; }
 
         [Required]
